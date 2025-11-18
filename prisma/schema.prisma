@@ -13,3 +13,81 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id Int @id @default(autoincrement())
+  email String @unique
+  password String
+
+  portfolios Portfolio[]
+  watchlists Watchlist[]
+
+  @@map("users") 
+}
+
+model Portfolio {
+  id Int @id @default(autoincrement())
+  name String @unique @db.VarChar(100)
+  
+
+  // user foreign key
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+
+  portfolioStocks PortfolioStock[]
+
+  @@map("portfolios") 
+}
+
+model Watchlist {
+  id Int @id @default(autoincrement())
+  name String @unique @db.VarChar(100)
+
+  // user foreign key
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+  
+  watchlistStocks WatchlistStock[]
+
+  @@map("watchlists") 
+}
+
+// Junction Table
+model PortfolioStock {
+  id Int @id @default(autoincrement())
+
+  portfolioId Int
+  stockId Int
+
+  portfolio Portfolio @relation(fields: [portfolioId], references: [id])
+  stock Stock @relation(fields: [stockId], references: [id])
+
+  @@unique([portfolioId, stockId])
+  @@map("portfolio_stocks") 
+}
+
+// Junction Table
+model WatchlistStock {
+  id Int @id @default(autoincrement())
+
+  watchlistId Int
+  stockId Int
+
+  watchlist Watchlist @relation(fields: [watchlistId], references: [id])
+  stock Stock @relation(fields: [stockId], references: [id])
+
+  @@unique([watchlistId, stockId])
+  @@map("watchlist_stocks") 
+}
+
+model Stock {
+  id Int @id @default(autoincrement())
+  symbol String @unique @db.VarChar(100)
+  name String @db.VarChar(100)
+  sector String @db.VarChar(100)
+
+  portfolioStocks PortfolioStock[]
+  watchlistStocks WatchlistStock[]
+
+  @@map("stocks")
+}
