@@ -11,18 +11,25 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  // prisma 7 broke the following line and is now in prisma.config.ts
+  // url      = env("DATABASE_URL")
 }
 
 model User {
   id Int @id @default(autoincrement())
   email String @unique
   password String
+  role Role @default(USER)
 
   portfolios Portfolio[]
   watchlists Watchlist[]
 
   @@map("users") 
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 model Portfolio {
