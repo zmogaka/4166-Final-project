@@ -3,6 +3,7 @@ import {
   getAllUsersHandler,
   getUserByIdHandler,
   updateUserHandler,
+  deleteUserHandler,
 } from "../controllers/userController.js";
 import { authenticate, isAdmin } from "../middleware/authenticate.js";
 import { authorizeOwnership } from "../middleware/authorizeOwnership.js";
@@ -25,6 +26,13 @@ router.put(
   authorizeOwnership,
   validateUser,
   updateUserHandler
+);
+
+router.delete(
+  "/profile/:id",
+  authenticate,
+  authorizeOwnership,
+  deleteUserHandler
 );
 
 export default router;

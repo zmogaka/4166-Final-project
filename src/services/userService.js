@@ -2,6 +2,7 @@ import {
   findAllUsers,
   findUserById,
   update,
+  remove,
 } from "../repositories/userRepo.js";
 import bcrypt from "bcrypt";
 import { Prisma } from "../generated/prisma/index.js";
@@ -34,5 +35,14 @@ export async function updateUser(id, email, password) {
       }
       throw error;
     }
+  }
+}
+
+export async function deleteUser(id) {
+  const deleted = await remove(id);
+  if (!deleted) {
+    const error = new Error(`Cannot find user with id ${id}`);
+    error.status = 404;
+    throw error;
   }
 }

@@ -31,3 +31,14 @@ export async function update(id, data) {
     throw err;
   }
 }
+
+export async function remove(id) {
+  try {
+    return await prisma.user.delete({
+      where: { id },
+    });
+  } catch (err) {
+    if (err.code === "P2025") return null;
+    throw err;
+  }
+}
