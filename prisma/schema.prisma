@@ -38,7 +38,7 @@ model Portfolio {
 
   // user foreign key
   userId Int
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   portfolioStocks PortfolioStock[]
 
@@ -52,7 +52,7 @@ model Watchlist {
 
   // user foreign key
   userId Int
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   watchlistStocks WatchlistStock[]
 
@@ -67,7 +67,7 @@ model PortfolioStock {
   portfolioId Int
   stockId Int
 
-  portfolio Portfolio @relation(fields: [portfolioId], references: [id])
+  portfolio Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
   stock Stock @relation(fields: [stockId], references: [id])
 
   @@unique([portfolioId, stockId])
@@ -81,7 +81,7 @@ model WatchlistStock {
   watchlistId Int
   stockId Int
 
-  watchlist Watchlist @relation(fields: [watchlistId], references: [id])
+  watchlist Watchlist @relation(fields: [watchlistId], references: [id], onDelete: Cascade)
   stock Stock @relation(fields: [stockId], references: [id])
 
   @@unique([watchlistId, stockId])
