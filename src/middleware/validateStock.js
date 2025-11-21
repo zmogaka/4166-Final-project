@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import { checkValidationResults } from "./handleValidationErrors.js";
+import { handleValidationErrors } from "./handleValidationErrors.js";
 
 export const validateStock = [
   body("symbol")
@@ -30,5 +30,5 @@ export const validateStock = [
     .isLength({ min: 2, max: 100 })
     .withMessage("sector must be between 2 and 100 characters"),
 
-  checkValidationResults,
+  handleValidationErrors,
 ];

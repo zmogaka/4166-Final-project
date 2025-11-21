@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import stockRoutes from "./routes/stockRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -14,6 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/stocks", stockRoutes);
+app.use("/api/auth", authRoutes);
 
 app.use((req, res, next) => {
   const err = new Error("Not Found");
@@ -22,8 +24,12 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(err.status || 500).json({ error: err.message });
+  console.log(err.stack);
+  if (!err.status) {
+    err.status = 500;
+    err.message = "Internal Server Erorr";
+  }
+  res.status(err.status).json({ error: err.message });
 });
 
 app.listen(PORT, () =>
