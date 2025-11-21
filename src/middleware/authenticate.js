@@ -21,7 +21,7 @@ export function authenticate(req, res, next) {
 }
 
 export function isAdmin(req, res, next) {
-  if (!req.user || req.user.role !== "admin") {
+  if (!req.user || req.user.role !== "ADMIN") {
     const error = new Error("Admin privileges required");
     error.status = 403;
     return next(error);

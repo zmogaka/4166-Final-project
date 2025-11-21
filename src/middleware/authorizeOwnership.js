@@ -1,0 +1,13 @@
+import { getUserById } from "../services/userService.js";
+
+export async function authorizeOwnership(req, res, next) {
+  const userId = parseInt(req.params.id);
+  const user = await getUserById(userId);
+
+  if (user.id !== req.user.id) {
+    const error = new Error("Forbidden: insufficient permission");
+    error.status = 403;
+    return next(error);
+  }
+  return next();
+}
