@@ -18,6 +18,9 @@ export async function getStocksHandler(req, res, next) {
 export async function getStockByIdHandler(req, res, next) {
   try {
     const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: "ID must be a valid number" });
+    }
     const stock = await getStockById(id);
     res.status(200).json(stock);
   } catch (err) {

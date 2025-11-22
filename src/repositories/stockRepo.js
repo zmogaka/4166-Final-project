@@ -9,7 +9,16 @@ export async function getById(id) {
 }
 
 export async function create(data) {
-  return prisma.stock.create({ data });
+  try {
+    return await prisma.stock.create({ data });
+  } catch (err) {
+    if (err.code === "P2002") {
+      const error = new Error("Stock with this symbol already exists");
+      error.status = 409;
+      throw error;
+    }
+    throw err;
+  }
 }
 
 export async function update(id, data) {
@@ -17,6 +26,11 @@ export async function update(id, data) {
     return await prisma.stock.update({ where: { id }, data });
   } catch (err) {
     if (err.code === "P2025") return null;
+    if (err.code === "P2002") {
+      const error = new Error("Stock with this symbol already exists");
+      error.status = 409;
+      throw error;
+    }
     throw err;
   }
 }
