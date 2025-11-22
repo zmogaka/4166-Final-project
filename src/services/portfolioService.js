@@ -50,3 +50,33 @@ export async function getPortfolioByIdAndUser(id, userId){
     }
     return portfolio;
 }
+
+export async function addStockToPortfolio(portfolioId, stockId){
+    try{
+        return await repo.addStock(portfolioId, stockId);
+    } catch (error){
+        if (error.message.includes('not found')){
+        throw error;
+        }
+        throw error;
+    }
+}
+
+export async function removeStockFromPortfolio(portfolioId, stockId){
+    const result = await repo.removeStock(portfolioId, stockId);
+    if (result) return;
+    else{
+        const error = new Error(`Cannot find stock in portfolio`);
+        error.status = 404;
+        throw error;
+    }
+}
+
+export async function getPortfolioStocks(portfolioId){
+    try{
+    const portfolioStocks = await repo.getPortfolioStocks(portfolioId);
+    return portfolioStocks;
+    }catch(error){
+        throw error;
+    }
+}

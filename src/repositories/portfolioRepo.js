@@ -88,7 +88,7 @@ export async function getById(id) {
 export async function getByIdAndUserId(id, userId) {
     try {
         const portfolio = await prisma.portfolio.findFirst({
-            where: { 
+            where: {
                 id: parseInt(id),
                 userId: parseInt(userId)
             },
@@ -107,3 +107,56 @@ export async function getByIdAndUserId(id, userId) {
     }
 }
 
+export async function addStock(portfolioId, stockId) {
+    try {
+        const portfolioStock = await prisma.portfolioStock.create({
+            data: {
+                portfolioId: parseInt(portfolioId),
+                stockId: parseInt(stockId),
+            },
+            include:{
+                stock: true,
+            },
+        });
+        return portfolioStock
+    } catch (error) {
+        if (error.code === 'P2002') {
+            throw new Error('Stock already exists in portfolio');
+        }
+        if (error.code === 'P2003') {
+            throw new Error('Portfolio or Stock not found');
+        }
+        throw error;
+    }
+}
+
+
+export async function removeStock(portfolioId, stockId) {
+    try {
+        const result = await prisma.portfolioStock.deleteMany({
+            where: {
+                portfolioId: parseInt(portfolioId),
+                stockId: parseInt(stockId)
+            }
+        });
+        return result.count > 0;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getPortfolioStocks(portfolioId){
+    try{
+        const portfolioStocks = await prisma.portfolioStock.findMany({
+            where: {
+                portfolioId: parseInt(portfolioId)
+            },
+            include: {
+                stock: true
+            }
+        });
+        return portfolioStocks;
+    } catch(err){
+        return err;
+    }
+}
