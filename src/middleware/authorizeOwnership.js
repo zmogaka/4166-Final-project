@@ -24,7 +24,7 @@ export async function authorizePortfolioOwnership(req, res, next) {
   } catch (error) {
     res.status(error.status || 500).json({
       success: false,
-      error: error.mesaage
+      error: error.message
     });
 
   }

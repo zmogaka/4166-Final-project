@@ -23,12 +23,13 @@ export const validateStock = [
     .withMessage("name must be between 2 and 100 characters"),
 
   body("sector")
-    .optional()
+    .exists({ checkFalsy: true })
+    .withMessage("sector is required")
+    .bail()
     .isString()
     .withMessage("sector must be a string")
     .bail()
     .isLength({ min: 2, max: 100 })
     .withMessage("sector must be between 2 and 100 characters"),
-
   handleValidationErrors,
 ];
