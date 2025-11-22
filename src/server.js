@@ -4,6 +4,7 @@ import morgan from "morgan";
 import stockRoutes from "./routes/stockRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import portfolioRoutes from "./routes/portfolioRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use("/api/stocks", stockRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/portfolio", portfolioRoutes);
 
 app.use((req, res, next) => {
   const err = new Error("Not Found");
