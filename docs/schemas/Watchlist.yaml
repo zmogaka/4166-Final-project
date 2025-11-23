@@ -1,0 +1,27 @@
+type: object
+properties:
+  id:
+    type: integer
+    readOnly: true
+    example: 5
+  name:
+    type: string
+    example: "Tech Watchlist"
+  userId:
+    type: integer
+    example: 1
+  watchlistStocks:
+  type: array
+  description: "Array of stocks in this watchlist"
+  items:
+    type: object
+    properties:
+      stockId:
+        type: integer
+        example: 101
+      symbol:
+        type: string
+        example: "AAPL"
+required:
+  - name
+  - userId

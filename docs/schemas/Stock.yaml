@@ -1,0 +1,19 @@
+type: object
+properties:
+  id:
+    type: integer
+    readOnly: true
+    example: 101
+  symbol:
+    type: string
+    example: "AAPL"
+  name:
+    type: string
+    example: "Apple Inc."
+  sector:
+    type: string
+    example: "Technology"
+required:
+  - symbol
+  - name
+  - sector

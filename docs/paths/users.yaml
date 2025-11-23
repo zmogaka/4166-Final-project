@@ -1,0 +1,139 @@
+paths:
+  /api/users/profile/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get user profile
+      description: Retrieve a user by ID (owner only).
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: User ID
+          schema:
+            type: integer
+            example: 3
+      responses:
+        "200":
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/User.yaml"
+        "400":
+          description: Invalid user ID
+          content:
+            application/json:
+              schema:
+                $ref: "../components/BadRequest.yaml"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Unauthorized.yaml"
+        "403":
+          description: Forbidden — cannot access another user's profile
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Forbidden.yaml"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "../components/NotFoundError.yaml"
+
+    put:
+      tags:
+        - Users
+      summary: Update user profile
+      description: Update the authenticated user's email or password.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: User ID
+          schema:
+            type: integer
+            example: 3
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: updatedEmail@example.com
+                password:
+                  type: string
+                  example: NewPassword123!
+      responses:
+        "200":
+          description: User successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/User.yaml"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "../components/BadRequest.yaml"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Unauthorized.yaml"
+        "403":
+          description: Forbidden — cannot update another user's profile
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Forbidden.yaml"
+
+    delete:
+      tags:
+        - Users
+      summary: Delete the user account
+      description: Delete a user account (owner only).
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: User ID
+          schema:
+            type: integer
+            example: 3
+      responses:
+        "204":
+          description: User deleted successfully
+        "400":
+          description: Invalid ID
+          content:
+            application/json:
+              schema:
+                $ref: "../components/BadRequest.yaml"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Unauthorized.yaml"
+        "403":
+          description: Forbidden — cannot delete another user's account
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Forbidden.yaml"

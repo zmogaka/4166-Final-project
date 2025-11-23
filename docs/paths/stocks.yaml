@@ -1,0 +1,201 @@
+paths:
+  /api/stocks:
+    get:
+      tags:
+        - Stocks
+      summary: Get all stocks
+      description: Returns a list of all available stocks.
+      responses:
+        "200":
+          description: List of all stocks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "../schemas/Stock.yaml"
+
+    post:
+      tags:
+        - Stocks
+      summary: Create a new stock (Admin only)
+      security:
+        - bearerAuth: []
+      description: Creates a new stock entry. Admin privileges required.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - symbol
+                - name
+                - sector
+              properties:
+                symbol:
+                  type: string
+                  example: AAPL
+                name:
+                  type: string
+                  example: Apple Inc.
+                sector:
+                  type: string
+                  example: Technology
+      responses:
+        "201":
+          description: Stock created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/Stock.yaml"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "../components/BadRequest.yaml"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Unauthorized.yaml"
+        "403":
+          description: Forbidden — Admin privileges required
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Forbidden.yaml"
+
+  /api/stocks/{id}:
+    get:
+      tags:
+        - Stocks
+      summary: Get a stock by ID
+      description: Retrieve a stock by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Stock ID
+          schema:
+            type: integer
+            example: 101
+      responses:
+        "200":
+          description: Stock retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/Stock.yaml"
+        "400":
+          description: Invalid stock ID
+          content:
+            application/json:
+              schema:
+                $ref: "../components/BadRequest.yaml"
+        "404":
+          description: Stock not found
+          content:
+            application/json:
+              schema:
+                $ref: "../components/NotFoundError.yaml"
+
+    put:
+      tags:
+        - Stocks
+      summary: Update a stock (Admin only)
+      security:
+        - bearerAuth: []
+      description: Updates an existing stock's attributes. Admin privileges required.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Stock ID
+          schema:
+            type: integer
+            example: 101
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - symbol
+                - name
+                - sector
+              properties:
+                symbol:
+                  type: string
+                  example: AAPL
+                name:
+                  type: string
+                  example: Apple Inc.
+                sector:
+                  type: string
+                  example: Technology
+      responses:
+        "200":
+          description: Stock updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/Stock.yaml"
+        "400":
+          description: Validation error or invalid ID
+          content:
+            application/json:
+              schema:
+                $ref: "../components/BadRequest.yaml"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Unauthorized.yaml"
+        "403":
+          description: Forbidden — Admin privileges required
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Forbidden.yaml"
+
+    delete:
+      tags:
+        - Stocks
+      summary: Delete a stock (Admin only)
+      security:
+        - bearerAuth: []
+      description: Deletes a stock by ID. Admin privileges required.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Stock ID
+          schema:
+            type: integer
+            example: 101
+      responses:
+        "204":
+          description: Stock deleted successfully
+        "400":
+          description: Invalid ID
+          content:
+            application/json:
+              schema:
+                $ref: "../components/BadRequest.yaml"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Unauthorized.yaml"
+        "403":
+          description: Forbidden — Admin privileges required
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Forbidden.yaml"

@@ -1,0 +1,363 @@
+paths:
+  /api/watchlists:
+    get:
+      tags:
+        - Watchlists
+      summary: Get all watchlists for the authenticated user
+      security:
+        - bearerAuth: []
+      description: Returns a list of watchlists owned by the authenticated user.
+      responses:
+        "200":
+          description: List of watchlists
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "../schemas/Watchlist.yaml"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Unauthorized.yaml"
+
+    post:
+      tags:
+        - Watchlists
+      summary: Create a new watchlist
+      security:
+        - bearerAuth: []
+      description: Creates a new watchlist owned by the authenticated user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: Tech Watchlist
+      responses:
+        "201":
+          description: Watchlist created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/Watchlist.yaml"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "../components/BadRequest.yaml"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Unauthorized.yaml"
+
+  /api/watchlists/{id}:
+    get:
+      tags:
+        - Watchlists
+      summary: Get a watchlist by ID
+      security:
+        - bearerAuth: []
+      description: Retrieve a watchlist owned by the authenticated user.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Watchlist ID
+          schema:
+            type: integer
+            example: 3
+      responses:
+        "200":
+          description: Watchlist retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/Watchlist.yaml"
+        "400":
+          description: Invalid ID format
+          content:
+            application/json:
+              schema:
+                $ref: "../components/BadRequest.yaml"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Unauthorized.yaml"
+        "403":
+          description: Forbidden — user does not own this watchlist
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Forbidden.yaml"
+        "404":
+          description: Watchlist not found
+          content:
+            application/json:
+              schema:
+                $ref: "../components/NotFoundError.yaml"
+
+    put:
+      tags:
+        - Watchlists
+      summary: Update a watchlist
+      security:
+        - bearerAuth: []
+      description: Update the name of a watchlist owned by the authenticated user.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 3
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: Updated Watchlist Name
+      responses:
+        "200":
+          description: Watchlist updated
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/Watchlist.yaml"
+        "400":
+          description: Validation error or invalid ID
+          content:
+            application/json:
+              schema:
+                $ref: "../components/BadRequest.yaml"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Unauthorized.yaml"
+        "403":
+          description: Forbidden — cannot update another user's watchlist
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Forbidden.yaml"
+
+    delete:
+      tags:
+        - Watchlists
+      summary: Delete a watchlist
+      security:
+        - bearerAuth: []
+      description: Delete a watchlist owned by the authenticated user.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 3
+      responses:
+        "204":
+          description: Watchlist deleted successfully
+        "400":
+          description: Invalid ID
+          content:
+            application/json:
+              schema:
+                $ref: "../components/BadRequest.yaml"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Unauthorized.yaml"
+        "403":
+          description: Forbidden — cannot delete another user's watchlist
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Forbidden.yaml"
+
+  /api/watchlists/{id}/stocks:
+    get:
+      tags:
+        - Watchlists
+      summary: Get all stocks in a watchlist
+      security:
+        - bearerAuth: []
+      description: Returns all stocks for a specific watchlist owned by the authenticated user.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Watchlist ID
+          schema:
+            type: integer
+            example: 3
+      responses:
+        "200":
+          description: List of stocks in the watchlist
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "../schemas/Stock.yaml"
+        "400":
+          description: Invalid watchlist ID
+          content:
+            application/json:
+              schema:
+                $ref: "../components/BadRequest.yaml"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Unauthorized.yaml"
+        "403":
+          description: Forbidden — user does not own this watchlist
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Forbidden.yaml"
+        "404":
+          description: Watchlist not found
+          content:
+            application/json:
+              schema:
+                $ref: "../components/NotFoundError.yaml"
+
+    post:
+      tags:
+        - Watchlists
+      summary: Add a stock to a watchlist
+      security:
+        - bearerAuth: []
+      description: Adds a stock to a watchlist if owned by the authenticated user.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Watchlist ID
+          schema:
+            type: integer
+            example: 3
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - stockId
+              properties:
+                stockId:
+                  type: integer
+                  example: 5
+      responses:
+        "201":
+          description: Stock added to watchlist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Stock AAPL added to watchlist
+        "400":
+          description: Invalid ID or validation error
+          content:
+            application/json:
+              schema:
+                $ref: "../components/BadRequest.yaml"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Unauthorized.yaml"
+        "403":
+          description: Forbidden — cannot modify another user's watchlist
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Forbidden.yaml"
+        "404":
+          description: Watchlist or stock not found
+          content:
+            application/json:
+              schema:
+                $ref: "../components/NotFoundError.yaml"
+
+  /api/watchlists/{id}/stocks/{stockId}:
+    delete:
+      tags:
+        - Watchlists
+      summary: Remove a stock from a watchlist
+      security:
+        - bearerAuth: []
+      description: Deletes a stock from the watchlist if owned by the authenticated user.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Watchlist ID
+          schema:
+            type: integer
+            example: 3
+        - name: stockId
+          in: path
+          required: true
+          description: Stock ID
+          schema:
+            type: integer
+            example: 5
+      responses:
+        "204":
+          description: Stock removed successfully
+        "400":
+          description: Invalid ID format
+          content:
+            application/json:
+              schema:
+                $ref: "../components/BadRequest.yaml"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Unauthorized.yaml"
+        "403":
+          description: Forbidden — cannot modify another user's watchlist
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Forbidden.yaml"
+        "404":
+          description: Watchlist or stock not found
+          content:
+            application/json:
+              schema:
+                $ref: "../components/NotFoundError.yaml"

@@ -1,0 +1,90 @@
+openapi: 3.1.0
+
+info:
+  title: Portfolio API
+  version: 1.0.0
+  description: |
+    REST API for portfolios
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+tags:
+  - name: Auth
+    description: User signup & login
+  - name: Users
+    description: User profile and admin user management
+  - name: Portfolios
+    description: Manage investment portfolios
+  - name: Portfolio Stocks
+    description: Add/remove stocks within a portfolio
+  - name: Stocks
+    description: Stock data (admin CRUD)
+  - name: Watchlists
+    description: Manage personal watchlists & their stocks
+
+paths:
+  /api/auth/signup:
+    $ref: "./paths/auth.yaml"
+  /api/auth/login:
+    $ref: "./paths/auth.yaml"
+
+  /api/users:
+    $ref: "./paths/users.yaml"
+  /api/users/profile/{id}:
+    $ref: "./paths/users.yaml"
+
+  /api/portfolios:
+    $ref: "./paths/portfolios.yaml"
+  /api/portfolios/{id}:
+    $ref: "./paths/portfolios.yaml"
+
+  /api/portfolios/{id}/stocks:
+    $ref: "./paths/portfolioStocks.yaml"
+  /api/portfolios/{id}/stocks/{stockId}:
+    $ref: "./paths/portfolioStocks.yaml"
+
+  /api/stocks:
+    $ref: "./paths/stocks.yaml"
+  /api/stocks/{id}:
+    $ref: "./paths/stocks.yaml"
+
+  /api/watchlists:
+    $ref: "./paths/watchlists.yaml"
+  /api/watchlists/{id}:
+    $ref: "./paths/watchlists.yaml"
+  /api/watchlists/{id}/stocks:
+    $ref: "./paths/watchlists.yaml"
+  /api/watchlists/{id}/stocks/{stockId}:
+    $ref: "./paths/watchlists.yaml"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      $ref: "./schemas/User.yaml"
+    Portfolio:
+      $ref: "./schemas/Portfolio.yaml"
+    Stock:
+      $ref: "./schemas/Stock.yaml"
+    Watchlist:
+      $ref: "./schemas/Watchlist.yaml"
+
+  responses:
+    BadRequest:
+      $ref: "./components/BadRequest.yaml"
+    Unauthorized:
+      $ref: "./components/Unauthorized.yaml"
+    Forbidden:
+      $ref: "./components/Forbidden.yaml"
+    NotFoundError:
+      $ref: "./components/NotFoundError.yaml"
+
+security:
+  - bearerAuth: []

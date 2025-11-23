@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import swaggerUi from 'swagger-ui-express'
+import YAML from "yamljs";
 import stockRoutes from "./routes/stockRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -19,6 +21,9 @@ if (process.env.NODE_ENV === "development") {
 
 app.use(cors());
 app.use(express.json());
+
+const specs = YAML.load('./docs/openapi.yaml');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs))
 
 app.get("/", (req, res) => res.send("API is running..."));
 

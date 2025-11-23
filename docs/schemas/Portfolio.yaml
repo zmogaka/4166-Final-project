@@ -1,0 +1,15 @@
+type: object
+properties:
+  id:
+    type: integer
+    readOnly: true
+    example: 10
+  name:
+    type: string
+    example: "Retirement Portfolio"
+  userId:
+    type: integer
+    example: 1
+required:
+  - name
+  - userId

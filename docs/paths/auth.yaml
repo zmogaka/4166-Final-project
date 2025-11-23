@@ -1,0 +1,92 @@
+paths:
+  /api/auth/signup:
+    post:
+      tags:
+        - Auth
+      summary: User signup
+      description: Create a new user account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: Password123!
+      responses:
+        "201":
+          description: User successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: New user created with id of 3
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "../components/BadRequest.yaml"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Unauthorized.yaml"
+
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: User login
+      description: Log in and receive an access token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: Password123!
+      responses:
+        "200":
+          description: Successfully logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "../components/BadRequest.yaml"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "../components/Unauthorized.yaml"
