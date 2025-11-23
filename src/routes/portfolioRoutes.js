@@ -1,7 +1,12 @@
 import express from "express";
 import { authenticate } from "../middleware/authenticate.js";
-import { validatePortfolio } from "../middleware/portfolioValidators.js";
-import { authorizePortfolioOwnership } from "../middleware/authorizeOwnership.js";
+import {
+  validateAddStock,
+  validateCreatePortfolio,
+  validatePortfolioId,
+  validateUpdatePortfolio,
+} from "../middleware/portfolioValidators.js";
+import { validateStockId } from "../middleware/validateStock.js";
 import {
   getAllPortfoliosHandler,
   createPortfolioHandler,
@@ -13,64 +18,50 @@ import {
   removeStockFromPortfolioHandler,
 } from "../controllers/portfolioController.js";
 
-import {
-  validateStockIdBody,
-  validateStockIdParam,
-} from "../middleware/portfolioStockValidators.js";
-
 const router = express.Router();
 
 router.get("/", authenticate, getAllPortfoliosHandler);
 
-router.post(
-  "/",
-  authenticate,
-  validatePortfolio.create,
-  createPortfolioHandler
-);
+router.get("/:id", authenticate, validatePortfolioId, getPortfolioByIdHandler);
+
+router.post("/", authenticate, validateCreatePortfolio, createPortfolioHandler);
 
 router.put(
   "/:id",
   authenticate,
-  authorizePortfolioOwnership,
-  validatePortfolio.update,
+  validatePortfolioId,
+  validateUpdatePortfolio,
   updatePortfolioHandler
 );
 
 router.delete(
   "/:id",
   authenticate,
-  authorizePortfolioOwnership,
+  validatePortfolioId,
   deletePortfolioHandler
-);
-
-router.get(
-  "/:id",
-  authenticate,
-  authorizePortfolioOwnership,
-  getPortfolioByIdHandler
 );
 
 router.get(
   "/:id/stocks",
   authenticate,
-  authorizePortfolioOwnership,
+  validatePortfolioId,
   getPortfolioStocksHandler
 );
 
 router.post(
   "/:id/stocks",
   authenticate,
-  authorizePortfolioOwnership,
-  validateStockIdBody,
+  validatePortfolioId,
+  validateStockId,
+  validateAddStock,
   addStockToPortfolioHandler
 );
 
 router.delete(
   "/:id/stocks/:stockId",
   authenticate,
-  authorizePortfolioOwnership,
-  validateStockIdParam, 
+  validatePortfolioId,
+  validateStockId,
   removeStockFromPortfolioHandler
 );
 

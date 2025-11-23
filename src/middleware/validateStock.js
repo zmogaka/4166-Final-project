@@ -1,5 +1,6 @@
-import { body } from "express-validator";
+import { param, body } from "express-validator";
 import { handleValidationErrors } from "./handleValidationErrors.js";
+import prisma from "../config/db.js";
 
 export const validateStock = [
   body("symbol")
@@ -31,5 +32,35 @@ export const validateStock = [
     .bail()
     .isLength({ min: 2, max: 100 })
     .withMessage("sector must be between 2 and 100 characters"),
+  handleValidationErrors,
+];
+
+export const validateStockId = [
+  param("stockId")
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage("stockId must be a positive integer"),
+
+  body("stockId")
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage("stockId must be a positive integer"),
+
+  body("stockId")
+    .optional()
+    .custom(async (value, { req }) => {
+      const id = parseInt(value || req.params.stockId, 10);
+
+      if (!id) return true;
+
+      const stock = await prisma.stock.findUnique({ where: { id } });
+
+      if (!stock) {
+        throw new Error(`stockId ${id} does not exist`);
+      }
+
+      return true;
+    }),
+
   handleValidationErrors,
 ];

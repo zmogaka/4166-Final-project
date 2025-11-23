@@ -1,82 +1,88 @@
-import * as repo from '../repositories/portfolioRepo.js';
+import prisma from "../config/db.js";
+import * as portfolioRepo from "../repositories/portfolioRepo.js";
 
-export async function getAllPortfolios(filter){
-    return  await repo.getAll(filter);
-}
-export async function createPortfolio(data){
-    return await repo.create(data);
-}
-export async function getPortfolioById(id) {
-    const portfolio = await repo.getById(id);
-    if (portfolio) return portfolio;
-    else {
-        const error = new Error(`Cannot find portfolio with id ${id}`);
-        error.status = 404;
-        throw error;
-    }
+export async function getAllPortfolios(userId) {
+  return portfolioRepo.findAllByUser(userId);
 }
 
-export async function updatePortfolio(id, data){
-    const updatedPortfolio = await repo.update(id, data);
-    if (updatedPortfolio) return updatedPortfolio;
-    else{
-        const error = new Error(`Cannot find portfolio with id ${id}`);
-        error.status = 404;
-        throw error;
-    }
+export async function getPortfolioById(id, userId) {
+  return portfolioRepo.findByIdForUser(id, userId);
 }
 
-export async function deletePortfolio(id){
-    const result = await repo.remove(id);
-    if (result) return;
-    else{
-        const error = new Error(`Cannot find portfolio with id ${id}`);
-        error.status = 404;
-        throw error;
-    }
+export async function createPortfolio(data) {
+  return portfolioRepo.create(data);
 }
 
-export async function getPortfolioByIdAndUser(id, userId){
-    const portfolio = await repo.getById(id);
-    if (!portfolio){
-        const error = new Error(`Cannot find portfolio with id ${id}`);
-        error.status = 404;
-        throw error;
-    }
-    if (portfolio.userId !== userId) {
-        const error = new Error(`Access denied to portfolio ${id}`);
-        error.status = 403;
-        throw error;
-    }
-    return portfolio;
+export async function updatePortfolio(id, updates, userId) {
+  const updated = await portfolioRepo.update(id, userId, updates);
+  if (!updated) {
+    const error = new Error(`Cannot find portfolio with id ${id}`);
+    error.status = 404;
+    throw error;
+  }
+  return updated;
 }
 
-export async function addStockToPortfolio(portfolioId, stockId){
-    try{
-        return await repo.addStock(portfolioId, stockId);
-    } catch (error){
-        if (error.message.includes('not found')){
-        throw error;
-        }
-        throw error;
-    }
+export async function deletePortfolio(id, userId) {
+  const removed = await portfolioRepo.remove(id, userId);
+  if (!removed) {
+    const error = new Error(`Cannot find portfolio with id ${id}`);
+    error.status = 404;
+    throw error;
+  }
+  return removed;
 }
 
-export async function removeStockFromPortfolio(portfolioId, stockId){
-    const result = await repo.removeStock(portfolioId, stockId);
-    if (result) return;
-    else{
-        const error = new Error(`Cannot find stock in portfolio`);
-        error.status = 404;
-        throw error;
-    }
+export async function getPortfolioStocks(portfolioId, userId) {
+  const portfolio = await portfolioRepo.findByIdForUser(portfolioId, userId);
+  if (!portfolio) {
+    const error = new Error(`Cannot find portfolio with id ${portfolioId}`);
+    error.status = 404;
+    throw error;
+  }
+
+  return portfolio.portfolioStocks.map((ps) => ps.stock);
 }
 
-export async function getPortfolioStocks(portfolioId){
-    try{
-    const portfolioStocks = await repo.getPortfolioStocks(portfolioId);
-    return portfolioStocks;
-    }catch(error){
-        throw error;
+export async function addStockToPortfolio(portfolioId, stockId, userId) {
+  const portfolio = await portfolioRepo.findByIdForUser(portfolioId, userId);
+  if (!portfolio) {
+    const error = new Error(`Cannot find portfolio with id ${portfolioId}`);
+    error.status = 404;
+    throw error;
+  }
+
+  const exists = portfolio.portfolioStocks.find((ps) => ps.stockId === stockId);
+  if (exists) {
+    const error = new Error("Stock already exists in portfolio");
+    error.status = 409;
+    throw error;
+  }
+
+  return await prisma.portfolioStock.create({
+    data: { portfolioId, stockId },
+    include: { stock: true },
+  });
+}
+
+export async function removeStockFromPortfolio(portfolioId, stockId, userId) {
+  const portfolio = await portfolioRepo.findByIdForUser(portfolioId, userId);
+  if (!portfolio) {
+    const error = new Error(`Cannot find portfolio with id ${portfolioId}`);
+    error.status = 404;
+    throw error;
+  }
+
+  try {
+    return await prisma.portfolioStock.delete({
+      where: { portfolioId_stockId: { portfolioId, stockId } },
+    });
+  } catch (err) {
+    if (err.code === "P2025") {
+      const error = new Error("Stock not found in portfolio");
+      error.status = 404;
+      throw error;
     }
+    throw err;
+  }
 }
