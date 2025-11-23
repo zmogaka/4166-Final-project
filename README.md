@@ -25,3 +25,4 @@ Setup:
 1. git clone https://github.com/your-username/4166-Final-Project.git
 2. cd 4166-Final-Project
 3. npm install
+4. npx @redocly/cli bundle docs/openapi.yaml -o public/bundled.yaml
