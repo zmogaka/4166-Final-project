@@ -1,5 +1,5 @@
 import express from "express";
-import { validateStock } from "../middleware/validateStock.js";
+import { validateStockId, validateStock } from "../middleware/validateStock.js";
 import { authenticate, isAdmin } from "../middleware/authenticate.js";
 import {
   getStocksHandler,
@@ -14,7 +14,14 @@ const router = express.Router();
 router.get("/", getStocksHandler);
 router.get("/:id", getStockByIdHandler);
 router.post("/", authenticate, isAdmin, validateStock, createStockHandler);
-router.put("/:id", authenticate, isAdmin, validateStockId, validateStock, updateStockHandler);
+router.put(
+  "/:id",
+  authenticate,
+  isAdmin,
+  validateStockId,
+  validateStock,
+  updateStockHandler
+);
 router.delete("/:id", authenticate, isAdmin, deleteStockHandler);
 
 export default router;

@@ -15,16 +15,20 @@ import {
   validateCreateWatchlist,
   validateUpdateWatchlist,
   validateAddStock,
-  validateStockId,
 } from "../middleware/watchlistValidators.js";
+
+import { validateStockId } from "../middleware/validateStock.js";
 
 import { authenticate } from "../middleware/authenticate.js";
 
 const router = express.Router();
 
 router.get("/", authenticate, getWatchlistsHandler);
+
 router.get("/:id", authenticate, validateWatchlistId, getWatchlistByIdHandler);
+
 router.post("/", authenticate, validateCreateWatchlist, createWatchlistHandler);
+
 router.put(
   "/:id",
   authenticate,
@@ -32,6 +36,7 @@ router.put(
   validateUpdateWatchlist,
   updateWatchlistHandler
 );
+
 router.delete(
   "/:id",
   authenticate,
@@ -45,13 +50,16 @@ router.get(
   validateWatchlistId,
   getWatchlistStocksHandler
 );
+
 router.post(
   "/:id/stocks",
   authenticate,
   validateWatchlistId,
+  validateStockId,
   validateAddStock,
   addStockToWatchlistHandler
 );
+
 router.delete(
   "/:id/stocks/:stockId",
   authenticate,

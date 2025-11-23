@@ -16,7 +16,7 @@ export async function createWatchlist(data) {
 export async function updateWatchlist(id, updates, userId) {
   const updated = await watchlistRepo.update(id, userId, updates);
   if (!updated) {
-    const error = new Error("Watchlist not found");
+    const error = new Error(`Cannot find watchlist with id ${id}`);
     error.status = 404;
     throw error;
   }
@@ -26,7 +26,7 @@ export async function updateWatchlist(id, updates, userId) {
 export async function deleteWatchlist(id, userId) {
   const removed = await watchlistRepo.remove(id, userId);
   if (!removed) {
-    const error = new Error("Watchlist not found");
+    const error = new Error(`Cannot find watchlist with id ${id}`);
     error.status = 404;
     throw error;
   }
@@ -36,7 +36,7 @@ export async function deleteWatchlist(id, userId) {
 export async function getStocksInWatchlist(watchlistId, userId) {
   const watchlist = await watchlistRepo.findByIdForUser(watchlistId, userId);
   if (!watchlist) {
-    const error = new Error("Watchlist not found");
+    const error = new Error(`Cannot find watchlist with id ${watchlistId}`);
     error.status = 404;
     throw error;
   }
@@ -46,7 +46,7 @@ export async function getStocksInWatchlist(watchlistId, userId) {
 export async function addStockToWatchlist(watchlistId, stockId, userId) {
   const watchlist = await watchlistRepo.findByIdForUser(watchlistId, userId);
   if (!watchlist) {
-    const error = new Error("Watchlist not found");
+    const error = new Error(`Cannot find watchlist with id ${watchlistId}`);
     error.status = 404;
     throw error;
   }
@@ -76,7 +76,7 @@ export async function addStockToWatchlist(watchlistId, stockId, userId) {
 export async function removeStockFromWatchlist(watchlistId, stockId, userId) {
   const watchlist = await watchlistRepo.findByIdForUser(watchlistId, userId);
   if (!watchlist) {
-    const error = new Error("Watchlist not found");
+    const error = new Error(`Cannot find watchlist with id ${watchlistId}`);
     error.status = 404;
     throw error;
   }

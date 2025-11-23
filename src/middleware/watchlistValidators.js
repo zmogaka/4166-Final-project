@@ -22,7 +22,9 @@ export const validateCreateWatchlist = [
 
 export const validateUpdateWatchlist = [
   body("name")
-    .optional()
+    .exists({ checkFalsy: true })
+    .withMessage("name is required")
+    .bail()
     .trim()
     .escape()
     .isLength({ min: 3, max: 100 })
