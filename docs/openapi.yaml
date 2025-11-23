@@ -9,6 +9,8 @@ info:
 servers:
   - url: http://localhost:8080
     description: Local development server
+  - url: https://four166-final-project.onrender.com
+    description: Production server on render
 
 tags:
   - name: Auth
