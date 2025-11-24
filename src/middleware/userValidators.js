@@ -21,3 +21,18 @@ export const validateUser = [
 
   handleValidationErrors,
 ];
+
+export const validateUpdateUser = [
+  body("email")
+    .optional()
+    .isEmail()
+    .withMessage("Email must be a valid email address"),
+
+  body("password")
+    .exists({ checkFalsy: true })
+    .withMessage("Password is required")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters"),
+
+  handleValidationErrors,
+];

@@ -7,7 +7,7 @@ import {
 } from "../controllers/userController.js";
 import { authenticate, isAdmin } from "../middleware/authenticate.js";
 import { authorizeOwnership } from "../middleware/authorizeOwnership.js";
-import { validateUser } from "../middleware/userValidators.js";
+import { validateUpdateUser } from "../middleware/userValidators.js";
 
 const router = express.Router();
 
@@ -24,7 +24,7 @@ router.put(
   "/profile/:id",
   authenticate,
   authorizeOwnership,
-  validateUser,
+  validateUpdateUser,
   updateUserHandler
 );
 
