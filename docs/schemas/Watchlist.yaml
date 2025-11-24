@@ -1,0 +1,20 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 1
+  userId:
+    type: integer
+    example: 1
+  name:
+    type: string
+    example: "Tech Watchlist"
+  watchlistStocks:
+    type: array
+    description: Array of stocks in this watchlist
+    items:
+      $ref: "./Stock.yaml"
+required:
+  - id
+  - userId
+  - name

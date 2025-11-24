@@ -3,3 +3,8 @@ node_modules
 /src/generated/prisma
 
 .env
+
+public/bundled.yaml
+docs/bundled.yaml
+*.bundle.yaml
+*.bundled.yaml

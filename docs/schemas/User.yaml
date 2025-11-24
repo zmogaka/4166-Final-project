@@ -1,0 +1,20 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 1
+  email:
+    type: string
+    format: email
+    example: "jane@example.com"
+  role:
+    type: string
+    description: User role
+    enum:
+      - USER
+      - ADMIN
+    example: "USER"
+required:
+  - id
+  - email
+  - role

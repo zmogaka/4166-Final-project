@@ -1,0 +1,58 @@
+openapi: 3.1.0
+
+info:
+  title: Portfolio API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://four166-final-project.onrender.com
+    description: Render deployment
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Auth
+    description: User signup & login
+  - name: Users
+    description: User profile and admin user management
+  - name: Portfolios
+    description: Manage investment portfolios
+  - name: Portfolio Stocks
+    description: Add/remove stocks within a portfolio
+  - name: Stocks
+    description: Stock data (admin CRUD)
+  - name: Watchlists
+    description: Manage personal watchlists & their stocks
+
+paths:
+  $ref: "./paths/paths.yaml"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      $ref: "./schemas/User.yaml"
+    Portfolio:
+      $ref: "./schemas/Portfolio.yaml"
+    Stock:
+      $ref: "./schemas/Stock.yaml"
+    Watchlist:
+      $ref: "./schemas/Watchlist.yaml"
+
+  responses:
+    BadRequest:
+      $ref: "./components/BadRequest.yaml"
+    Unauthorized:
+      $ref: "./components/Unauthorized.yaml"
+    Forbidden:
+      $ref: "./components/Forbidden.yaml"
+    NotFoundError:
+      $ref: "./components/NotFoundError.yaml"

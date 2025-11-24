@@ -1,0 +1,16 @@
+description: Bad request – validation or input error.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Validation failed"
+        details:
+          type: array
+          items:
+            type: string
+            example: "email is required"
+      required:
+        - error

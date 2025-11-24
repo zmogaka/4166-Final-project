@@ -1,0 +1,15 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 1
+  userId:
+    type: integer
+    example: 1
+  name:
+    type: string
+    example: "Tech Growth Portfolio"
+required:
+  - id
+  - userId
+  - name
