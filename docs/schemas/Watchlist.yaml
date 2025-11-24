@@ -2,26 +2,19 @@ type: object
 properties:
   id:
     type: integer
-    readOnly: true
-    example: 5
-  name:
-    type: string
-    example: "Tech Watchlist"
+    example: 1
   userId:
     type: integer
     example: 1
+  name:
+    type: string
+    example: "Tech Watchlist"
   watchlistStocks:
-  type: array
-  description: "Array of stocks in this watchlist"
-  items:
-    type: object
-    properties:
-      stockId:
-        type: integer
-        example: 101
-      symbol:
-        type: string
-        example: "AAPL"
+    type: array
+    description: Array of stocks in this watchlist
+    items:
+      $ref: "./Stock.yaml"
 required:
-  - name
+  - id
   - userId
+  - name

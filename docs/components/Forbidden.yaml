@@ -1,5 +1,9 @@
-type: object
-properties:
-  error:
-    type: string
-    example: "Forbidden: insufficient permission"
+description: Forbidden – the user does not have permission to perform this action.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Forbidden: insufficient permission"

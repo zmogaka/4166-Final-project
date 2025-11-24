@@ -1,5 +1,9 @@
-type: object
-properties:
-  error:
-    type: string
-    example: "Not authenticated"
+description: Not authenticated.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Not authenticated"

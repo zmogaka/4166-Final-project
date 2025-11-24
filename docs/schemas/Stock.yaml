@@ -2,7 +2,6 @@ type: object
 properties:
   id:
     type: integer
-    readOnly: true
     example: 101
   symbol:
     type: string
@@ -14,6 +13,7 @@ properties:
     type: string
     example: "Technology"
 required:
+  - id
   - symbol
   - name
   - sector

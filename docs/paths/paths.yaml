@@ -1,0 +1,836 @@
+/api/auth/signup:
+  post:
+    tags:
+      - Auth
+    summary: User signup
+    description: Register a new user account.
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+                format: email
+                example: jane@example.com
+              password:
+                type: string
+                minLength: 8
+                maxLength: 64
+                example: "securePassword123"
+    responses:
+      "201":
+        description: User created successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "New user created with id of 1"
+      "400":
+        $ref: "../components/BadRequest.yaml"
+
+/api/auth/login:
+  post:
+    tags:
+      - Auth
+    summary: User login
+    description: Log in and get a JWT access token.
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+                format: email
+                example: jane@example.com
+              password:
+                type: string
+                example: "securePassword123"
+    responses:
+      "200":
+        description: Login successful
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                  example: "jwt.token.here"
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+
+/api/users:
+  get:
+    tags:
+      - Users
+    summary: Get all users
+    description: Admin-only endpoint to list all users.
+    responses:
+      "200":
+        description: List of users
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../schemas/User.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+
+/api/users/profile/{id}:
+  get:
+    tags:
+      - Users
+    summary: Get a user profile
+    description: Get the profile for the authenticated user (ownership enforced).
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the user
+        schema:
+          type: integer
+          example: 1
+    responses:
+      "200":
+        description: User profile
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/User.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+      "404":
+        $ref: "../components/NotFoundError.yaml"
+
+  put:
+    tags:
+      - Users
+    summary: Update a user profile
+    description: Update your own email and/or password.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the user
+        schema:
+          type: integer
+          example: 1
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                format: email
+                example: newemail@example.com
+              password:
+                type: string
+                minLength: 8
+                maxLength: 64
+                example: "newSecurePassword"
+    responses:
+      "200":
+        description: Updated user
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/User.yaml"
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+      "404":
+        $ref: "../components/NotFoundError.yaml"
+
+  delete:
+    tags:
+      - Users
+    summary: Delete a user
+    description: Delete your own user account.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the user
+        schema:
+          type: integer
+          example: 1
+    responses:
+      "204":
+        description: User deleted successfully (no content)
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+      "404":
+        $ref: "../components/NotFoundError.yaml"
+
+/api/portfolios:
+  get:
+    tags:
+      - Portfolios
+    summary: Get all portfolios for the authenticated user
+    responses:
+      "200":
+        description: List of portfolios
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../schemas/Portfolio.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+
+  post:
+    tags:
+      - Portfolios
+    summary: Create a new portfolio
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+            properties:
+              name:
+                type: string
+                example: "Tech Growth Portfolio"
+    responses:
+      "201":
+        description: Portfolio created successfully
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/Portfolio.yaml"
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+
+/api/portfolios/{id}:
+  get:
+    tags:
+      - Portfolios
+    summary: Get a portfolio by ID
+    description: Only the owner can access.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 1
+        description: ID of the portfolio
+    responses:
+      "200":
+        description: Portfolio details
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/Portfolio.yaml"
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+      "404":
+        $ref: "../components/NotFoundError.yaml"
+
+  put:
+    tags:
+      - Portfolios
+    summary: Update a portfolio
+    description: Only the owner can update their portfolio.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 1
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+            properties:
+              name:
+                type: string
+                example: "Updated Portfolio Name"
+    responses:
+      "200":
+        description: Updated portfolio
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/Portfolio.yaml"
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+      "404":
+        $ref: "../components/NotFoundError.yaml"
+
+  delete:
+    tags:
+      - Portfolios
+    summary: Delete a portfolio
+    description: Only the owner can delete their portfolio.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 1
+    responses:
+      "204":
+        description: Portfolio deleted successfully (no content)
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+      "404":
+        $ref: "../components/NotFoundError.yaml"
+
+
+/api/portfolios/{id}/stocks:
+  get:
+    tags:
+      - Portfolio Stocks
+    summary: Get all stocks in a portfolio
+    description: Only the owner can access their portfolio's stocks.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 1
+        description: ID of the portfolio
+    responses:
+      "200":
+        description: List of stocks in the portfolio
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../schemas/Stock.yaml"
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+      "404":
+        $ref: "../components/NotFoundError.yaml"
+
+  post:
+    tags:
+      - Portfolio Stocks
+    summary: Add a stock to a portfolio
+    description: Only the owner can modify their portfolio.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 1
+        description: ID of the portfolio
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - stockId
+            properties:
+              stockId:
+                type: integer
+                example: 101
+    responses:
+      "201":
+        description: Stock added to portfolio
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Stock AAPL added to portfolio"
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+      "404":
+        $ref: "../components/NotFoundError.yaml"
+
+/api/portfolios/{id}/stocks/{stockId}:
+  delete:
+    tags:
+      - Portfolio Stocks
+    summary: Remove a stock from a portfolio
+    description: Only the owner can modify their portfolio.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 1
+      - name: stockId
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 101
+    responses:
+      "204":
+        description: Stock removed from portfolio
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+      "404":
+        $ref: "../components/NotFoundError.yaml"
+
+
+/api/stocks:
+  get:
+    tags:
+      - Stocks
+    summary: Get all stocks
+    description: Public endpoint to list stocks.
+    security: []
+    responses:
+      "200":
+        description: List of stocks
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../schemas/Stock.yaml"
+
+  post:
+    tags:
+      - Stocks
+    summary: Create a stock
+    description: Admin-only endpoint.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - symbol
+              - name
+              - sector
+            properties:
+              symbol:
+                type: string
+                example: AAPL
+              name:
+                type: string
+                example: Apple Inc.
+              sector:
+                type: string
+                example: Technology
+    responses:
+      "201":
+        description: Stock created
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/Stock.yaml"
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+
+/api/stocks/{id}:
+  get:
+    tags:
+      - Stocks
+    summary: Get a stock by ID
+    security: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 101
+        description: ID of the stock
+    responses:
+      "200":
+        description: Stock found
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/Stock.yaml"
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "404":
+        $ref: "../components/NotFoundError.yaml"
+
+  put:
+    tags:
+      - Stocks
+    summary: Update a stock
+    description: Admin-only endpoint.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 101
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              symbol:
+                type: string
+                example: MSFT
+              name:
+                type: string
+                example: Microsoft Corp.
+              sector:
+                type: string
+                example: Technology
+    responses:
+      "200":
+        description: Updated stock
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/Stock.yaml"
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+      "404":
+        $ref: "../components/NotFoundError.yaml"
+
+  delete:
+    tags:
+      - Stocks
+    summary: Delete a stock
+    description: Admin-only endpoint.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 101
+    responses:
+      "204":
+        description: Stock deleted
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+      "404":
+        $ref: "../components/NotFoundError.yaml"
+
+/api/watchlists:
+  get:
+    tags:
+      - Watchlists
+    summary: Get all watchlists for the authenticated user
+    responses:
+      "200":
+        description: List of watchlists
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../schemas/Watchlist.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+
+  post:
+    tags:
+      - Watchlists
+    summary: Create a new watchlist
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+            properties:
+              name:
+                type: string
+                example: "Tech Watchlist"
+    responses:
+      "201":
+        description: Watchlist created
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/Watchlist.yaml"
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+
+/api/watchlists/{id}:
+  get:
+    tags:
+      - Watchlists
+    summary: Get a watchlist by ID
+    description: Only the owner can access.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 1
+    responses:
+      "200":
+        description: Watchlist found
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/Watchlist.yaml"
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+      "404":
+        $ref: "../components/NotFoundError.yaml"
+
+  put:
+    tags:
+      - Watchlists
+    summary: Update a watchlist
+    description: Only the owner can update.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 1
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+            properties:
+              name:
+                type: string
+                example: "Updated Watchlist Name"
+    responses:
+      "200":
+        description: Updated watchlist
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/Watchlist.yaml"
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+      "404":
+        $ref: "../components/NotFoundError.yaml"
+
+  delete:
+    tags:
+      - Watchlists
+    summary: Delete a watchlist
+    description: Only the owner can delete.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 1
+    responses:
+      "204":
+        description: Watchlist deleted
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+      "404":
+        $ref: "../components/NotFoundError.yaml"
+
+/api/watchlists/{id}/stocks:
+  get:
+    tags:
+      - Watchlists
+    summary: Get all stocks in a watchlist
+    description: Only the owner can view.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 1
+    responses:
+      "200":
+        description: List of stocks in the watchlist
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../schemas/Stock.yaml"
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+      "404":
+        $ref: "../components/NotFoundError.yaml"
+
+  post:
+    tags:
+      - Watchlists
+    summary: Add a stock to a watchlist
+    description: Only the owner can modify.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 1
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - stockId
+            properties:
+              stockId:
+                type: integer
+                example: 101
+    responses:
+      "201":
+        description: Stock added to watchlist
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Stock AAPL added to watchlist"
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+      "404":
+        $ref: "../components/NotFoundError.yaml"
+
+/api/watchlists/{id}/stocks/{stockId}:
+  delete:
+    tags:
+      - Watchlists
+    summary: Remove a stock from a watchlist
+    description: Only the owner can modify.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 1
+      - name: stockId
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 101
+    responses:
+      "204":
+        description: Stock removed from watchlist
+      "400":
+        $ref: "../components/BadRequest.yaml"
+      "401":
+        $ref: "../components/Unauthorized.yaml"
+      "403":
+        $ref: "../components/Forbidden.yaml"
+      "404":
+        $ref: "../components/NotFoundError.yaml"

@@ -2,14 +2,19 @@ type: object
 properties:
   id:
     type: integer
-    readOnly: true
     example: 1
   email:
     type: string
-    example: "user@example.com"
+    format: email
+    example: "jane@example.com"
   role:
     type: string
-    enum: ["USER", "ADMIN"]
+    description: User role
+    enum:
+      - USER
+      - ADMIN
     example: "USER"
 required:
+  - id
   - email
+  - role

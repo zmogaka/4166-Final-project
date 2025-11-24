@@ -3,14 +3,15 @@ openapi: 3.1.0
 info:
   title: Portfolio API
   version: 1.0.0
-  description: |
-    REST API for portfolios
 
 servers:
   - url: http://localhost:8080
     description: Local development server
   - url: https://four166-final-project.onrender.com
-    description: Production server on render
+    description: Render deployment
+
+security:
+  - bearerAuth: []
 
 tags:
   - name: Auth
@@ -27,39 +28,7 @@ tags:
     description: Manage personal watchlists & their stocks
 
 paths:
-  /api/auth/signup:
-    $ref: "./paths/auth.yaml"
-  /api/auth/login:
-    $ref: "./paths/auth.yaml"
-
-  /api/users:
-    $ref: "./paths/users.yaml"
-  /api/users/profile/{id}:
-    $ref: "./paths/users.yaml"
-
-  /api/portfolios:
-    $ref: "./paths/portfolios.yaml"
-  /api/portfolios/{id}:
-    $ref: "./paths/portfolios.yaml"
-
-  /api/portfolios/{id}/stocks:
-    $ref: "./paths/portfolioStocks.yaml"
-  /api/portfolios/{id}/stocks/{stockId}:
-    $ref: "./paths/portfolioStocks.yaml"
-
-  /api/stocks:
-    $ref: "./paths/stocks.yaml"
-  /api/stocks/{id}:
-    $ref: "./paths/stocks.yaml"
-
-  /api/watchlists:
-    $ref: "./paths/watchlists.yaml"
-  /api/watchlists/{id}:
-    $ref: "./paths/watchlists.yaml"
-  /api/watchlists/{id}/stocks:
-    $ref: "./paths/watchlists.yaml"
-  /api/watchlists/{id}/stocks/{stockId}:
-    $ref: "./paths/watchlists.yaml"
+  $ref: "./paths/paths.yaml"
 
 components:
   securitySchemes:
@@ -87,6 +56,3 @@ components:
       $ref: "./components/Forbidden.yaml"
     NotFoundError:
       $ref: "./components/NotFoundError.yaml"
-
-security:
-  - bearerAuth: []

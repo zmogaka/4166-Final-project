@@ -22,8 +22,8 @@ if (process.env.NODE_ENV === "development") {
 app.use(cors());
 app.use(express.json());
 
-const specs = YAML.load('./docs/openapi.yaml');
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs))
+const specs = YAML.load('./public/bundled.yaml');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.get("/", (req, res) => res.send("API is running..."));
 

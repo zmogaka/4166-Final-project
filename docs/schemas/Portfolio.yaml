@@ -2,14 +2,14 @@ type: object
 properties:
   id:
     type: integer
-    readOnly: true
-    example: 10
-  name:
-    type: string
-    example: "Retirement Portfolio"
+    example: 1
   userId:
     type: integer
     example: 1
+  name:
+    type: string
+    example: "Tech Growth Portfolio"
 required:
-  - name
+  - id
   - userId
+  - name
