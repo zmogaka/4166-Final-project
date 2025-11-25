@@ -40,6 +40,13 @@ export async function remove(id) {
     return await prisma.stock.delete({ where: { id } });
   } catch (err) {
     if (err.code === "P2025") return null;
+    if (err.code === "P2003") {
+      const error = new Error(
+        "Cannot delete stock because it is used in portfolios or watchlists"
+      );
+      error.status = 409;
+      throw error;
+    }
     throw err;
   }
 }
