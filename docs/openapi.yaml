@@ -20,8 +20,6 @@ tags:
     description: User profile and admin user management
   - name: Portfolios
     description: Manage investment portfolios
-  - name: Portfolio Stocks
-    description: Add/remove stocks within a portfolio
   - name: Stocks
     description: Stock data (admin CRUD)
   - name: Watchlists

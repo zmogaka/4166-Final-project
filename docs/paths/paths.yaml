@@ -337,7 +337,7 @@
 /api/portfolios/{id}/stocks:
   get:
     tags:
-      - Portfolio Stocks
+      - Portfolios
     summary: Get all stocks in a portfolio
     description: Only the owner can access their portfolio's stocks.
     parameters:
@@ -368,7 +368,7 @@
 
   post:
     tags:
-      - Portfolio Stocks
+      - Portfolios
     summary: Add a stock to a portfolio
     description: Only the owner can modify their portfolio.
     parameters:
@@ -414,7 +414,7 @@
 /api/portfolios/{id}/stocks/{stockId}:
   delete:
     tags:
-      - Portfolio Stocks
+      - Portfolios
     summary: Remove a stock from a portfolio
     description: Only the owner can modify their portfolio.
     parameters:
